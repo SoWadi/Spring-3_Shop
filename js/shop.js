@@ -83,10 +83,9 @@ function buy(id) {
       //return selected
     }
   }
-  
 
   // 2. Add found product to the cartList array
-  
+
   cartList.push(selected);
 }
 
@@ -94,7 +93,12 @@ function buy(id) {
 function cleanCart() {
   cartList = [];
   total = 0;
-    cart.length = 0;
+  cart.length = 0;
+  const modalCart = document.getElementById("cart_list");
+  modalCart.innerHTML = "";
+    const resetPrecio = document.getElementById("total_price");
+  resetPrecio.innerHTML = 0; //total.toFixed(2);
+  document.getElementById("count_product").innerHTML = 0;
 }
 
 // ************************** Exercise3 **************************
@@ -109,70 +113,68 @@ function calculateTotal() {
 
 // ************************** Exercise4 **************************
 
-
-
 function generateCart() {
   // Using the "cartlist" array that contains all the items in the shopping cart, generate the "cart" array that does not contain repeated items, instead each item of this array "cart" shows the quantity of product.
   console.log("cart: ", cart);
-console.log("id generateCart(): ", id);
-        //Pour chaque élément cartList, nous devons valider s'il existe dans le tableau cart :
+  console.log("id generateCart(): ", id);
+  //Pour chaque élément cartList, nous devons valider s'il existe dans le tableau cart :
 
-    for (let i = 0; i <= cartList.length-1; i++) { 
+  for (let i = 0; i <= cartList.length - 1; i++) {
+    let selectedFromCartList = cart.find(
+      (element) => element.id === cartList[i].id
+    );
+    console.log("selectedFromCartList:", selectedFromCartList); // while isnt in cart, devuelve UNDEFINED
+    console.log("cart: ", cart);
+    console.log("i l128: ", i);
 
-        let selectedFromCartList = cart.find((element) => element.id === cartList[i].id);
-        console.log("selectedFromCartList:", selectedFromCartList); // while isnt in cart, devuelve UNDEFINED
-        console.log("cart: ", cart);
-        
-
-        if (selectedFromCartList === undefined){  //si selectedFromCartList n'EXISTE pas dans cart[]
-            let product = cartList[i];
-            product.quantity = 1;
-            product.subtotal = product.price;
-            cart.push(product);
-          } 
-        
-          else {                                  //si selectedFromCartList EXISTE dans cart[]
-            let productIndex = cart.indexOf(selectedFromCartList); // ==> trouve son index dans cart[]
-            cart[productIndex].quantity++; // ==> a travers son index, ADD +1 to its .quantity
-            cart[productIndex].subtotal = cart[productIndex].quantity * cart[productIndex].price;
-          }
-        }                
-    console.log("cart", cart);
-    
-
+    if (selectedFromCartList === undefined) {
+      //si selectedFromCartList n'EXISTE pas dans cart[]
+      let product = cartList[i];
+      product.quantity = 1;
+      product.subtotal = product.price;
+      cart.push(product);
+    } else {
+      //si selectedFromCartList EXISTE dans cart[]
+      let productIndex = cart.indexOf(selectedFromCartList); // ==> trouve son index dans cart[]
+      cart[productIndex].quantity++; // ==> a travers son index, ADD +1 to its .quantity
+      cart[productIndex].subtotal =
+        cart[productIndex].quantity * cart[productIndex].price;
+    }
+  }
+  console.log("cart", cart);
 }
 
 // Exercise 5
 function applyPromotionsCart() {
-  
-  generateCart()
-console.log("cart: ", cart);
-  
-let hasPromoOil = cart.find((element) => element.id == 1 && element.quantity >= 3);
-let hasPromoBakery = cart.find((element) => element.id === 3 && element.quantity >= 2);
+  generateCart();
+  console.log("cart: ", cart);
+
+  let hasPromoOil = cart.find(
+    (element) => element.id == 1 && element.quantity >= 3
+  );
+  let hasPromoBakery = cart.find(
+    (element) => element.id === 3 && element.quantity >= 2
+  );
 
   for (let i = 0; i < cart.length; i++) {
-
-    
-      if(hasPromoOil){
-        let OilIndex = cart.indexOf(hasPromoOil); // ==> trouve son index dans cart[]
-        cart[OilIndex].subtotalWithDiscount = cart[OilIndex].quantity * 10;
-      }
-    
-    
-      if (hasPromoBakery){
-      let reduc = ((5*2)/3).toFixed(2);        
-      let bakeryIndex = cart.indexOf(hasPromoBakery); // ==> trouve son index dans cart[]
-      cart[bakeryIndex].subtotalWithDiscount = cart[bakeryIndex].quantity * reduc;
+    if (hasPromoOil) {
+      let OilIndex = cart.indexOf(hasPromoOil); // ==> trouve son index dans cart[]
+      cart[OilIndex].subtotalWithDiscount = cart[OilIndex].quantity * 10;
     }
 
-      }
+    if (hasPromoBakery) {
+      let reduc = ((5 * 2) / 3).toFixed(2);
+      let bakeryIndex = cart.indexOf(hasPromoBakery); // ==> trouve son index dans cart[]
+      cart[bakeryIndex].subtotalWithDiscount =
+        cart[bakeryIndex].quantity * reduc;
+    }
   }
+}
 /* function percentage2(percent, total) {
   reduc = Number(((percent/ 100) * total).toFixed(2));
 return reduc
 } */
-  /* 
+/* 
   offer: { id =
     number: 3,
     percent: 20,
@@ -189,50 +191,47 @@ function printCart() {
   const modalCart = document.getElementById("cart_list");
   modalCart.innerHTML = "";
 
-
   applyPromotionsCart();
   let totalCart = 0;
 
   let tbody_tr = document.querySelector("thead tr");
-  
-/*   let tTotal = document.createElement("th");
+
+  /*   let tTotal = document.createElement("th");
   tTotal.innerHTML = "Total";
   tbody_tr.append(tTotal); */
 
-        for (let i = 0; i < cart.length; i++) {
+  for (let i = 0; i < cart.length; i++) {
+    let tableRow = document.createElement("tr");
+    let itemName = document.createElement("th");
+    itemName.innerHTML = cart[i].name;
+    let itemPrice = document.createElement("td");
+    itemPrice.innerHTML = cart[i].price;
+    let itemQuantity = document.createElement("td");
+    itemQuantity.innerHTML = cart[i].quantity;
+    let itemTotal = document.createElement("td");
+    if (!cart[i].subtotalWithDiscount) {
+      itemTotal.innerHTML = cart[i].subtotal;
+      total = cart[i].subtotal;
+    } else {
+      itemTotal.innerHTML = cart[i].subtotalWithDiscount.toFixed(2);
+      total = cart[i].subtotalWithDiscount;
+    }
 
+    totalCart += total;
+    console.log("total_ , totalCart:", total, " ", totalCart.toFixed(2));
 
-          let tableRow = document.createElement("tr");
-          let itemName = document.createElement("th");
-              itemName.innerHTML = cart[i].name;
-          let itemPrice = document.createElement("td");
-              itemPrice.innerHTML = cart[i].price;
-          let itemQuantity = document.createElement("td");
-              itemQuantity.innerHTML = cart[i].quantity;
-          let itemTotal = document.createElement("td");
-              if (!cart[i].subtotalWithDiscount) {
-                itemTotal.innerHTML = cart[i].subtotal;
-                total = cart[i].subtotal;
-              } else {
-                itemTotal.innerHTML = (cart[i].subtotalWithDiscount).toFixed(2);
-                total = cart[i].subtotalWithDiscount;
-      }
+    tableRow.appendChild(itemName);
+    tableRow.appendChild(itemPrice);
+    tableRow.appendChild(itemQuantity);
+    tableRow.appendChild(itemTotal);
+    modalCart.appendChild(tableRow);
+  }
 
-      totalCart += total;
-      console.log("total_ , totalCart:", total, " ",totalCart.toFixed(2));
+  const elementPrice = document.getElementById("total_price");
+  elementPrice.innerHTML = totalCart; //total.toFixed(2);
 
-
-  tableRow.appendChild(itemName);
-  tableRow.appendChild(itemPrice);
-  tableRow.appendChild(itemQuantity);
-  tableRow.appendChild(itemTotal);
-  modalCart.appendChild(tableRow);
-
-}
-
-const elementPrice = document.getElementById("total_price");
-elementPrice.innerHTML = totalCart;//total.toFixed(2);
-  
+  const cart_counter = document.getElementById("count_product");
+  cart_counter.textContent = cartList.length;
 }
 
 // ** Nivell II **
@@ -241,37 +240,36 @@ let newCartExo7 = [];
 // Exercise 7
 
 function addToCart(id) {
-
-    // Refactor previous code in order to simplify it
+  // Refactor previous code in order to simplify it
   // 1. Loop for to the array products to get the item to add to cart
-    // 2. Add found product to the cart array or update its quantity in case it has been added previously.
-console.log("cart:", cart);
+  // 2. Add found product to the cart array or update its quantity in case it has been added previously.
+  console.log("cart:", cart);
 
-  productPositionInProducts = products.findIndex(element => element.id == id);
+  productPositionInProducts = products.findIndex((element) => element.id == id);
   let selectedProductInCart = cart.find((element) => element.id === id);
-  cartIndexOfSelectedProduct = cart.findIndex(e => e.id === products[productPositionInProducts].id);
+  cartIndexOfSelectedProduct = cart.findIndex(
+    (e) => e.id === products[productPositionInProducts].id
+  );
 
-  for(let i = 0; i < products.length ;i++){
-  if (cartIndexOfSelectedProduct < 0){
-    products[productPositionInProducts].quantity = 1;
-    cart.push(products[productPositionInProducts]);
-    break
-  } 
-  else {
-    let productIndex = cart.indexOf(selectedProductInCart);
-    cart[productIndex].quantity++; 
-    cart[productIndex].subtotal = cart[productIndex].quantity * cart[productIndex].price;
-    break
+  for (let i = 0; i < products.length; i++) {
+    console.log("i: ", i);
+    if (cartIndexOfSelectedProduct < 0) {
+      products[productPositionInProducts].quantity = 1;
+      cart.push(products[productPositionInProducts]);
+      break;
+    } else {
+      let productIndex = cart.indexOf(selectedProductInCart);
+      cart[productIndex].quantity++;
+      cart[productIndex].subtotal =
+        cart[productIndex].quantity * cart[productIndex].price;
+      break;
+    }
   }
-}
-  
-  
 }
 
 // Exercise 8
 function removeFromCart(id) {
   // 1. Loop for to the array products to get the item to add to cart
-
   // 2. Add found product to the cartList array
 }
 

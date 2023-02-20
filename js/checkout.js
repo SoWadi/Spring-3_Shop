@@ -16,8 +16,12 @@ function validate() {
 	let errorPassword = document.getElementById("errorPassword");
 	
 	// Validate fields entered by the user: name, phone, password, and email
-if (fName.length < 4) { // l86 en html
+if (fName.length > 3) { // l86 en html
 		console.log("fName.length: ", fName.length);
+		errorName.style.display = "none";
+		//error++;
+	}
+	else {
 		errorName.style.display = "block";
 		error++;
 	}
@@ -27,16 +31,25 @@ if (fName.length < 4) { // l86 en html
 		errorEmail.style.display = "block";
 		error++;
 	}
+	else {
+		errorEmail.style.display = "none";
+		}
 
-	if(fPhone.length < 4){
+	if(fPhone.length > 3){
+		errorPhone.style.display = "none";
+	}
+	else {
 		errorPhone.style.display = "block";
 		error++;
 	}
-	if(fPassword.length < 4){
+
+	if(fPassword.length > 3){
+		errorPassword.style.display = "none";
+	}
+	else {		
 		errorPassword.style.display = "block";
 		error++;
 	}
-	
 	if(error>0){
 		console.log("Error");
 		
