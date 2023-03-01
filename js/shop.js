@@ -71,7 +71,7 @@ let cart = [];
 
 var total = 0;
 
-// Exercise 1
+/* // Exercise 1
 let selected, id;
 function buy(id) {
   // 1. Loop for to the array products to get the item to add to cart
@@ -87,7 +87,7 @@ function buy(id) {
   // 2. Add found product to the cartList array
 
   cartList.push(selected);
-}
+} */
 
 // ************************** Exercise2 ***************************
 function cleanCart() {
@@ -116,7 +116,7 @@ function calculateTotal() {
 function generateCart() {
   // Using the "cartlist" array that contains all the items in the shopping cart, generate the "cart" array that does not contain repeated items, instead each item of this array "cart" shows the quantity of product.
   console.log("cart: ", cart);
-  console.log("id generateCart(): ", id);
+  //console.log("id generateCart(): ", id);
   //Pour chaque élément cartList, nous devons valider s'il existe dans le tableau cart :
 
   for (let i = 0; i <= cartList.length - 1; i++) {
@@ -194,7 +194,7 @@ function printCart() {
   applyPromotionsCart();
   let totalCart = 0;
 
-  let tbody_tr = document.querySelector("thead tr");
+  //let tbody_tr = document.querySelector("thead tr");
 
   /*   let tTotal = document.createElement("th");
   tTotal.innerHTML = "Total";
@@ -213,7 +213,7 @@ function printCart() {
       itemTotal.innerHTML = cart[i].subtotal;
       total = cart[i].subtotal;
     } else {
-      itemTotal.innerHTML = cart[i].subtotalWithDiscount.toFixed(2);
+      itemTotal.innerHTML = cart[i].subtotalWithDiscount//.toFixed(2);
       total = cart[i].subtotalWithDiscount;
     }
 
@@ -228,10 +228,9 @@ function printCart() {
   }
 
   const elementPrice = document.getElementById("total_price");
-  elementPrice.innerHTML = totalCart; //total.toFixed(2);
+  elementPrice.innerHTML = totalCart.toFixed(2); //total.toFixed(2);
 
-  const cart_counter = document.getElementById("count_product");
-  cart_counter.textContent = cartList.length;
+
 }
 
 // ** Nivell II **
@@ -239,33 +238,26 @@ function printCart() {
 let newCartExo7 = [];
 // Exercise 7
 
+
 function addToCart(id) {
-  // Refactor previous code in order to simplify it
-  // 1. Loop for to the array products to get the item to add to cart
-  // 2. Add found product to the cart array or update its quantity in case it has been added previously.
-  console.log("cart:", cart);
+  const cart_counter = document.getElementById("count_product");
+  cart_counter.textContent ++;
 
-  productPositionInProducts = products.findIndex((element) => element.id == id);
-  let selectedProductInCart = cart.find((element) => element.id === id);
-  cartIndexOfSelectedProduct = cart.findIndex(
-    (e) => e.id === products[productPositionInProducts].id
-  );
+  let product = products.find((element) => element.id === id);
+  let cartItem = cart.find((element) => element.id === id);
 
-  for (let i = 0; i < products.length; i++) {
-    console.log("i: ", i);
-    if (cartIndexOfSelectedProduct < 0) {
-      products[productPositionInProducts].quantity = 1;
-      cart.push(products[productPositionInProducts]);
-      break;
-    } else {
-      let productIndex = cart.indexOf(selectedProductInCart);
-      cart[productIndex].quantity++;
-      cart[productIndex].subtotal =
-        cart[productIndex].quantity * cart[productIndex].price;
-      break;
-    }
+  if (!cartItem) {
+    product.quantity = 1;
+    product.subtotal = product.price;
+    cart.push(product);
+  } else {
+    cartItem.quantity++;
+    cartItem.subtotal = cartItem.quantity * cartItem.price;
   }
+
+  console.log("cart: ", cart);
 }
+
 
 // Exercise 8
 function removeFromCart(id) {
